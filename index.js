@@ -1,9 +1,12 @@
 import puppeteer from 'puppeteer'
 import dotenv from 'dotenv'
+import nodemailer from 'nodemailer'
 
 ;(async () => {
 	dotenv.config()
-	const SELECTOR = process.env.SELECTOR
+    const SELECTOR = process.env.SELECTOR
+    let transporter = nodemailer.createTransport(transport[, defaults])
+
 
 	const browser = await puppeteer.launch()
 	const page = await browser.newPage()
