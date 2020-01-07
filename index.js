@@ -1,31 +1,25 @@
-import axios from 'axios'
+import puppeteer from 'puppeteer'
 import dotenv from 'dotenv'
-import cheerio from 'cheerio'
-dotenv.config()
 
-const rolesKeywords = [
-	'Front',
-	'End',
-	'React',
-	'Engineer',
-	'Front-end',
-	'Front-end Engineer',
-	'Front End Engineer - React',
-]
+(async () => {
+	dotenv.config()
+	const SELECTOR = process.env.SELECTOR
 
-const getHTML = async url => {
-	const { data: html } = await axios.get(url)
-	return html
-}
+	const browser = await puppeteer.launch()
+	const page = await browser.newPage()
+	await page.goto(process.env.URL)
+	await page.waitForSelector(SELECTOR)
 
-const go = async url => {
-	parseHTML(await getHTML(url))
-}
+	const jobs = await page.evaluate(selector => {
+		const jobNodeList = document.querySelectorAll(selector)
+		const jobArr = []
+		for (let i = 0; i < jobNodeList.length; i++) {
+			jobArr.push(jobNodeList[i].textContent)
+		}
+		return jobArr
+	}, SELECTOR)
 
-const parseHTML = async html => {
-	const $ = cheerio.load(html)
-	const openings = $('div[data-development].department-section')
-	console.log(openings.find('div'))
-}
+	console.log(jobs)
 
-go(process.env.URL)
+	await browser.close()
+})()
