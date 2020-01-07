@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer'
 import dotenv from 'dotenv'
 
-(async () => {
+;(async () => {
 	dotenv.config()
 	const SELECTOR = process.env.SELECTOR
 
@@ -13,9 +13,8 @@ import dotenv from 'dotenv'
 	const jobs = await page.evaluate(selector => {
 		const jobNodeList = document.querySelectorAll(selector)
 		const jobArr = []
-		for (let i = 0; i < jobNodeList.length; i++) {
-			jobArr.push(jobNodeList[i].textContent)
-		}
+		jobNodeList.forEach(job => jobArr.push(job.textContent))
+
 		return jobArr
 	}, SELECTOR)
 
