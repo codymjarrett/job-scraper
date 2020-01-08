@@ -2,5 +2,8 @@
 node_modules
 jspm_packages
 
+# secrets
+.env
+
 # Serverless directories
 .serverless

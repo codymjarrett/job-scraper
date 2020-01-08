@@ -1,13 +1,9 @@
-'use strict';
-'use strict';
-
+'use strict'
 
 const puppeteer = require('puppeteer')
 const dotenv = require('dotenv')
-const moment = require('moment')
 const nodemailer = require('nodemailer')
 dotenv.config()
-
 
 /*
     '10 * * * * *' 
@@ -19,7 +15,7 @@ dotenv.config()
     for PROD
 */
 
-const cron = () => {
+module.exports.run = () => {
 	//  run M-F @ 9am
 	;(async () => {
 		const SELECTOR = process.env.SELECTOR
@@ -36,11 +32,11 @@ const cron = () => {
 			return jobArr
 		}, SELECTOR)
 
-        const result = jobs
-        .toString()
-        .replace(/Indianapolis,|Chicago,|Chicago|Indianapolis/g, function(x) {
-            return ' ' + x + '\n'
-        })
+		const result = jobs
+			.toString()
+			.replace(/Indianapolis,|Chicago,|Chicago|Indianapolis/g, function(x) {
+				return ' ' + x + '\n'
+			})
 		sendEmail(result)
 		await browser.close()
 	})()
@@ -51,17 +47,21 @@ const cron = () => {
 		secure: true, // use SSL
 		auth: {
 			user: process.env.EMAIL_USER,
-			pass: process.env.EMAIL_PASSWORD
-		}
-	});
-	
+			pass: process.env.EMAIL_PASSWORD,
+		},
+	})
+
+  const today = new Date()
+  
 	const options = {
 		to: process.env.RECIPIENT,
-		subject: ` ${moment().format('MMM Do YY')} - ${process.env.EMAIL_SUBJECT}`,
-		text: null,	
+		subject: ` ${today.toLocaleDateString('en-US')} - ${
+			process.env.EMAIL_SUBJECT
+		}`,
+		text: null,
 	}
-	
-	const sendEmail = text =>{
+
+	const sendEmail = text => {
 		const message = {
 			text,
 		}
@@ -73,10 +73,6 @@ const cron = () => {
 				console.log('Email sent: ' + info.response)
 			}
 		})
-	}	
+	}
 }
-
-module.exports.cron = cron
-
-
-
+ 

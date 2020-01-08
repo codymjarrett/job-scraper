@@ -56,11 +56,22 @@ provider:
 #  exclude:
 #    - exclude-me.js
 #    - exclude-me-dir/**
+# package:
+#   individually: true
 
 functions:
     cron:
-      handler: handler.cron
+      handler: handler.run
       events:
-        - schedule: 
-          rate: rate(1 minutes)
+        - schedule: rate(1 minute)
+
         # - schedule: cron(1 * * ? *)
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
+    includeModules: true   # Node modules configuration for packaging
+    packager: 'yarn'   # Packager that will be used to package your external modules
